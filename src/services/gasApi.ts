@@ -122,6 +122,38 @@ export function formatDateString(dateVal?: string): string {
   return str.slice(0, 10);
 }
 
+const MONTH_MAP: Record<string, number> = {
+  jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6,
+  jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12,
+};
+
+export function normalizeLotString(rawLot?: string): string {
+  if (!rawLot) return '';
+  const str = String(rawLot).trim();
+
+  // 구글 시트에서 10-4 등 입력 시 Date 객체 문자열(GMT/한국 표준시)로 자동 변환된 경우: 원래 입력 형태인 "10-4"로 복원
+  if (str.includes('GMT') || str.includes('표준시')) {
+    const match = str.match(/([a-z]{3})\s+(\d{1,2})\s+(\d{4})/i);
+    if (match) {
+      const month = MONTH_MAP[match[1].toLowerCase()];
+      const day = parseInt(match[2], 10);
+      if (month && !isNaN(day)) {
+        return `${month}-${day}`;
+      }
+    }
+  }
+
+  // 만약 YYYY-MM-DD 형태로 넘어온 경우 연도 생략 형태 확인
+  const isoMatch = str.match(/^\d{4}-(\d{1,2})-(\d{1,2})$/);
+  if (isoMatch) {
+    const m = parseInt(isoMatch[1], 10);
+    const d = parseInt(isoMatch[2], 10);
+    return `${m}-${d}`;
+  }
+
+  return str.toUpperCase();
+}
+
 export function groupRawRows(rows: RawInventoryRow[]): InventoryProduct[] {
   const map: Record<string, InventoryProduct> = {};
 
@@ -133,7 +165,7 @@ export function groupRawRows(rows: RawInventoryRow[]): InventoryProduct[] {
     let date = formatDateString(row.date);
 
     let actualName = rawName;
-    let actualLot = rawLot;
+    let actualLot = normalizeLotString(rawLot);
 
     // ID가 name으로 넘어오고 실제 제품명이 lot 자리에 넘어온 경우: ID 숨기고 실제 제품명으로 치환
     if (/^\d{4,}$/.test(rawName) && rawLot && !/^LOT[-_0-9]/i.test(rawLot)) {
@@ -156,7 +188,7 @@ export function groupRawRows(rows: RawInventoryRow[]): InventoryProduct[] {
 
     if (actualLot && actualLot !== '') {
       map[key].lots.push({
-        lot: actualLot.toUpperCase(),
+        lot: actualLot,
         date,
       });
     }
