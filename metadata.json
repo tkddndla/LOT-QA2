@@ -1,0 +1,6 @@
+{
+  "name": "공관 입고 관리 시스템",
+  "description": "스마트 재고 및 로트 추적 솔루션 (구글 시트 & 앱스 스크립트 연동 반응형 웹앱)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
