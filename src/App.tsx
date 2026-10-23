@@ -15,7 +15,6 @@ import { Header } from './components/Header';
 import { SearchTab } from './components/SearchTab';
 import { RegisterTab } from './components/RegisterTab';
 import { DetailModal } from './components/DetailModal';
-import { SettingsModal } from './components/SettingsModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
 
 export default function App() {
@@ -28,7 +27,6 @@ export default function App() {
 
   // Modals state
   const [selectedProduct, setSelectedProduct] = useState<InventoryProduct | null>(null);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Toast notifications
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -194,7 +192,6 @@ export default function App() {
         syncMessage={syncMessage}
         onRefresh={() => loadData(true)}
         isRefreshing={isRefreshing}
-        onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
       {/* Main Content Area (Mobile-optimized max-w-xl) */}
@@ -224,27 +221,12 @@ export default function App() {
         onShowToast={addToast}
       />
 
-      {/* Settings & Deployment Guide Modal */}
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        onSaved={() => loadData(true)}
-      />
-
       {/* Toast Notification Layer */}
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
-      {/* Footer */}
-      <footer className="py-6 text-center text-xs sm:text-sm text-gray-500 font-bold space-y-1">
-        <div>공관 입고 관리 시스템 • Cloudflare Pages &amp; Google Apps Script</div>
-        <div className="text-[11px] text-gray-400">
-          <button
-            onClick={() => setIsSettingsOpen(true)}
-            className="hover:text-primary transition-colors underline"
-          >
-            연동 설정 및 Code.gs 코드 보기
-          </button>
-        </div>
+      {/* Clean Mobile Footer */}
+      <footer className="py-6 text-center text-xs sm:text-sm text-gray-400 font-bold">
+        공관 입고 관리 시스템 • Cloudflare Pages
       </footer>
     </div>
   );

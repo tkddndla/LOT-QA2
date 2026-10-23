@@ -1,6 +1,6 @@
 import React from 'react';
 import { SyncStatusState } from '../types/inventory';
-import { RefreshCw, Settings, Search, PlusCircle, Box } from 'lucide-react';
+import { RefreshCw, Search, PlusCircle } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: 'search' | 'register';
@@ -9,7 +9,6 @@ interface HeaderProps {
   syncMessage: string;
   onRefresh: () => void;
   isRefreshing: boolean;
-  onOpenSettings: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -19,7 +18,6 @@ export const Header: React.FC<HeaderProps> = ({
   syncMessage,
   onRefresh,
   isRefreshing,
-  onOpenSettings,
 }) => {
   const getDotClass = () => {
     switch (syncState) {
@@ -43,19 +41,15 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="text-2xl sm:text-3xl">📦</span>
             <span>공관 입고 관리 시스템</span>
           </h1>
-          <p className="text-xs sm:text-sm text-red-100 font-bold opacity-95 mt-0.5">
-            스마트 재고 및 로트 추적 솔루션
-          </p>
         </div>
 
         <div className="flex items-center space-x-2">
-          {/* Sync badge */}
+          {/* Sync badge with ALWAYS-VISIBLE text label */}
           <div
-            title={syncMessage}
             className="flex items-center space-x-2 text-xs sm:text-sm bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm shadow-inner"
           >
             <span className={`w-3 h-3 rounded-full ${getDotClass()}`} />
-            <span className="font-extrabold text-white hidden xs:inline">{syncMessage}</span>
+            <span className="font-extrabold text-white text-xs sm:text-sm">{syncMessage}</span>
           </div>
 
           {/* Refresh button */}
@@ -67,16 +61,6 @@ export const Header: React.FC<HeaderProps> = ({
             aria-label="데이터 새로고침"
           >
             <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-          </button>
-
-          {/* Settings button */}
-          <button
-            onClick={onOpenSettings}
-            className="p-2 rounded-xl bg-white/20 hover:bg-white/30 text-white transition-all active:scale-95"
-            title="API 연동 설정 및 배포 가이드"
-            aria-label="설정"
-          >
-            <Settings className="w-4 h-4" />
           </button>
         </div>
       </div>

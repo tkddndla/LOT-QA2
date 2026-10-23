@@ -56,8 +56,28 @@ export const DetailModal: React.FC<DetailModalProps> = ({
             <div className="font-black text-gray-900 text-lg leading-tight">
               {product.name}
             </div>
-            <div className="text-xs font-bold text-gray-500 mt-0.5">
-              {product.capacity} · {product.material} (총 {product.lots.length}회 입고)
+            <div className="flex items-center space-x-2 mt-1.5">
+              {product.capacity && (
+                <span className="font-extrabold bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-lg text-xs border border-gray-200">
+                  {product.capacity}
+                </span>
+              )}
+              <span
+                className={`font-extrabold px-2.5 py-0.5 rounded-lg text-xs border ${
+                  product.material.includes('스틸') || product.material.includes('ST')
+                    ? 'bg-blue-50 text-blue-700 border-blue-200'
+                    : product.material.includes('알루미늄') || product.material.includes('AL')
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : product.material.includes('PET') || product.material.includes('페트')
+                    ? 'bg-purple-50 text-purple-700 border-purple-200'
+                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                }`}
+              >
+                {product.material}
+              </span>
+              <span className="text-xs font-bold text-gray-400">
+                (총 {product.lots.length}회 입고)
+              </span>
             </div>
           </div>
           <button

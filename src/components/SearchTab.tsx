@@ -168,12 +168,31 @@ export const SearchTab: React.FC<SearchTabProps> = ({
                 onClick={() => onSelectProduct(item)}
                 className="bg-white p-5 rounded-3xl shadow-sm border-2 border-gray-200 space-y-3 cursor-pointer hover:border-primary hover:shadow-md transition-all w-full active:scale-[0.99] group"
               >
-                {/* Top Badges */}
+                {/* Top Badges: 용량 따로, 재질 따로 분리 & 재질별 고유 색상 */}
                 <div className="flex justify-between items-center text-sm">
-                  <span className="font-extrabold bg-red-50 text-primary px-3 py-1.5 rounded-xl border border-red-100">
-                    {item.capacity} ({item.material})
-                  </span>
-                  <span className="text-gray-500 font-extrabold text-xs bg-gray-100 px-2.5 py-1 rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    {/* 용량 배지 */}
+                    {item.capacity && (
+                      <span className="font-extrabold bg-gray-100 text-gray-700 px-3 py-1 rounded-xl text-xs border border-gray-200">
+                        {item.capacity}
+                      </span>
+                    )}
+                    {/* 재질 배지 (스틸/알루미늄/PET별 개별 색상) */}
+                    <span
+                      className={`font-extrabold px-3 py-1 rounded-xl text-xs border ${
+                        item.material.includes('스틸') || item.material.includes('ST')
+                          ? 'bg-blue-50 text-blue-700 border-blue-200'
+                          : item.material.includes('알루미늄') || item.material.includes('AL')
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : item.material.includes('PET') || item.material.includes('페트')
+                          ? 'bg-purple-50 text-purple-700 border-purple-200'
+                          : 'bg-amber-50 text-amber-700 border-amber-200'
+                      }`}
+                    >
+                      {item.material}
+                    </span>
+                  </div>
+                  <span className="text-gray-500 font-extrabold text-xs bg-gray-50 border border-gray-200 px-2.5 py-1 rounded-xl">
                     이력: {item.lots.length}건
                   </span>
                 </div>

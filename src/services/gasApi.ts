@@ -122,33 +122,42 @@ export function formatDateString(dateVal?: string): string {
   return str.slice(0, 10);
 }
 
-/**
- * Raw Row 데이터를 품목명+용량+재질 기준으로 그룹화하여 반환합니다.
- */
 export function groupRawRows(rows: RawInventoryRow[]): InventoryProduct[] {
   const map: Record<string, InventoryProduct> = {};
 
   rows.forEach((row) => {
-    if (!row.name || !row.name.trim()) return;
-    const name = row.name.trim();
-    const capacity = (row.capacity || '').trim();
-    const material = (row.material || '').trim();
-    const key = `${name}__${capacity}__${material}`;
+    let rawName = (row.name || '').trim();
+    let capacity = (row.capacity || '').trim();
+    let material = (row.material || '').trim();
+    let rawLot = (row.lot || '').trim();
+    let date = formatDateString(row.date);
+
+    let actualName = rawName;
+    let actualLot = rawLot;
+
+    // ID가 name으로 넘어오고 실제 제품명이 lot 자리에 넘어온 경우: ID 숨기고 실제 제품명으로 치환
+    if (/^\d{4,}$/.test(rawName) && rawLot && !/^LOT[-_0-9]/i.test(rawLot)) {
+      actualName = rawLot;
+      actualLot = date || '입고완료';
+    }
+
+    if (!actualName) return;
+    const key = `${actualName}__${capacity}__${material}`;
 
     if (!map[key]) {
       map[key] = {
         id: key,
-        name,
+        name: actualName,
         capacity,
         material,
         lots: [],
       };
     }
 
-    if (row.lot && row.lot.trim() !== '') {
+    if (actualLot && actualLot !== '') {
       map[key].lots.push({
-        lot: row.lot.trim().toUpperCase(),
-        date: formatDateString(row.date),
+        lot: actualLot.toUpperCase(),
+        date,
       });
     }
   });
